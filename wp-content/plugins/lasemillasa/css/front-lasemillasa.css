@@ -1,0 +1,35 @@
+    .paso{
+        border: 3px solid #D4D4FF;
+        background: #6FB9E9;
+        width: 50px;
+        height: 50px;
+        border-radius: 100%;
+        text-align: center;
+        line-height: 45px;
+        font-size: 25px;
+        font-family: arial;
+        float:left;
+        margin:5px 10px 5px 5px;
+        color: #fff;
+    }
+
+    .item-paso{
+        font-size: 20px;
+        line-height: 60px;
+        font-family: arial;
+        clear:both;
+    }
+    .item-select{
+        margin-left: 65px;
+    }
+    .lista-pasos{
+        list-style: none;
+    }
+    
+    .busca-productos{
+        float:right;
+    }
+    
+    .content-detalle-receta{
+        clear:both;
+    }
