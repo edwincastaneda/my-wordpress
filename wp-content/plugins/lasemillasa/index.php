@@ -18,7 +18,7 @@ define('PLUGIN_PATH',  plugin_dir_url(__FILE__));
 include "includes/db.php";
 include "includes/menus.php";
 include "includes/config.php";
-//include "includes/front.php";
+include "includes/front.php";
 
 
 /* POST TYPES */

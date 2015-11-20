@@ -33,3 +33,16 @@
     .content-detalle-receta{
         clear:both;
     }
+    
+    .center{
+        text-align: center;
+    }
+    
+    .producto-descripcion{
+        font-size: 14px;
+        font-style: italic;
+    }
+    
+    .img-descripcion-producto{
+        margin:auto;
+    }

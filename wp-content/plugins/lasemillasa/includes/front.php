@@ -1,12 +1,13 @@
 <?php
-add_filter('the_content', 'agrega_recetario_a_pagina');
 
-function agrega_recetario_a_pagina($content) {
+function agrega_recetario($content) {
 
-    wp_enqueue_style('front-lasemillasa', PLUGIN_PATH.'css/front-lasemillasa.css');
-
+    wp_enqueue_style('front-lasemillasa', PLUGIN_PATH . 'css/front-lasemillasa.css');
+    echo $content;
+    
+    
     if (is_page(esc_attr(get_option('id_pagina')))) {
-        echo $content;
+        
         $pagina = esc_url(get_permalink(get_option('id_pagina_resultado')));
         ?>
         <script>
@@ -55,55 +56,80 @@ function agrega_recetario_a_pagina($content) {
         </form>
         <?php
     }
-}
+    
+     if (is_page(esc_attr(get_option('id_pagina_resultado')))) {
 
-//add_filter('the_content', 'agrega_recetario_a_pagina_resultado');
-
-function agrega_recetario_a_pagina_resultado($content, $url_plugin) {
-    wp_enqueue_style('front-lasemillasa', $url_plugin . 'css/front-lasemillasa.css');
-
-    if (esc_attr(get_option('slug_productos')) != "") {
-        $products_slug = esc_attr(get_option('slug_productos'));
-    } else {
-        $products_slug = 'product';
-    }
-
-    if (is_page(esc_attr(get_option('id_pagina_resultado')))) {
-        echo $content;
-        $pagina = esc_url(get_permalink(get_option('id_pagina_resultado')));
-
+        if (esc_attr(get_option('slug_productos')) != "") {
+            $products_slug = esc_attr(get_option('slug_productos'));
+        } else {
+            $products_slug = 'product';
+        }
 
         if (isset($_POST['id_animal']) && isset($_POST['id_enfermedad'])) {
             ?>
             <div class="content-detalle-receta">
-                <?php
-                wp_reset_query();
-                global $wpdb;
-                $sql = "SELECT * FROM " . $wpdb->prefix . "recetas WHERE id_animal=" . $_POST['id_animal']
-                        . " AND id_enfermedad=" . $_POST['id_enfermedad'];
+                <table border="1">
+                    <tbody>
+                        <tr>
+                    <b>Animal:</b> <?php echo get_the_title($_POST['id_animal']); ?><br/>
+                    <b>Enfermedad:</b> <?php echo get_the_title($_POST['id_enfermedad']); ?>
+                    </tr>
+            <?php
+            global $wpdb;
+            $sql = "SELECT * FROM " . $wpdb->prefix . "recetas WHERE id_animal=" . $_POST['id_animal']
+                    . " AND id_enfermedad=" . $_POST['id_enfermedad'];
 
-                $product = $wpdb->get_results(
-                        $sql, ARRAY_A
-                );
+            $product = $wpdb->get_results(
+                    $sql, ARRAY_A
+            );
 
+            if (count($product) > 0) {
                 foreach ($product as $products) {
-                    //$args = array('post_type' => $products_slug, 'p' => $products['id_producto']);
-                    //get_post_meta($products['id_producto'], '_regular_price', true);
+                    $args = array('post_type' => $products_slug, 'p' => $products['id_producto']);
                     $loop = new WP_Query($args);
                     if ($loop->have_posts()) {
-//                    while($loop->have_posts()){
-//                        $loop->the_post();
-//                        the_title();
-//                        
-//                    }
-//                    
+                        $loop->the_post();
+                        ?>
+                                <tr>
+                                    <td class="center"><?php echo get_the_title(); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="producto-descripcion"><?php echo get_post_field('post_content', $products['id_producto']); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="center"><?php
+                        if (has_post_thumbnail()) {
+                            the_post_thumbnail('large', array('class' => 'img-descripcion-producto'));
+                        } else {
+                            echo '<img class="img-descripcion-producto" src="' . get_bloginfo('stylesheet_directory') . '/images/thumbnail-default.jpg" />';
+                        }
+                        ?>
+                                    </td>
+                                </tr>
+
+                        <?php
                     }
-                    wp_reset_query();
                 }
+            } else {
                 ?>
-            </div>
-            <button type="button" class="busca-productos" onclick="window.history.back();">Regresar</button>
-            <?php
+                        <tr> 
+                            <td class="center">SIN RESULTADOS</td>
+                        </tr>
+                <?php
+            }
+
+
+            wp_reset_query();
         }
+        ?>
+                </tbody>
+            </table>
+
+        </div>
+        <button type="button" class="busca-productos" onclick="window.history.back();">Regresar</button>
+        <?php
     }
+
 }
+
+add_filter('the_content', 'agrega_recetario');
